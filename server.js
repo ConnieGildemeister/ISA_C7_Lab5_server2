@@ -1,3 +1,5 @@
+// Note: ChatGPT was used to generate this code.
+
 require('dotenv').config();
 const http = require('http');
 const url = require('url');
@@ -45,26 +47,32 @@ const applyCORS = (response) => {
 const handleRequest = async (req, res) => {
     applyCORS(res);
 
+    // Handle preflight requests
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
         return res.end();
     }
 
     let body = '';
+    // Collect the request body
     req.on('data', chunk => body += chunk);
 
+    // Process the request
     req.on('end', async () => {
         const parsedUrl = url.parse(req.url, true);
         const method = req.method;
 
+        // Handle POST requests for SQL queries
         if (method === 'POST' && parsedUrl.pathname === '/sql') {
             const { sql } = querystring.parse(body);
 
+            // Validate the SQL query
             if (!validateSQLQuery(sql, 'POST')) {
                 res.writeHead(403, { 'Content-Type': 'application/json' });
                 return res.end(JSON.stringify({ error: 'Only INSERT queries are allowed via POST' }));
             }
 
+            // Execute the SQL query
             try {
                 await database.query(sql);
                 res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -74,14 +82,17 @@ const handleRequest = async (req, res) => {
                 res.end(JSON.stringify({ error: 'SQL Error: ' + error.message }));
             }
 
+        // Handle GET requests for SQL queries
         } else if (method === 'GET' && parsedUrl.pathname.startsWith('/sql')) {
             const sql = decodeURIComponent(parsedUrl.pathname.split('/sql/')[1]);
 
+            // Validate the SQL query
             if (!validateSQLQuery(sql, 'GET')) {
                 res.writeHead(403, { 'Content-Type': 'application/json' });
                 return res.end(JSON.stringify({ error: 'Only SELECT queries are allowed via GET' }));
             }
 
+            // Execute the SQL query
             try {
                 const results = await database.query(sql);
                 res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -91,6 +102,7 @@ const handleRequest = async (req, res) => {
                 res.end(JSON.stringify({ error: 'SQL Error: ' + error.message }));
             }
 
+        // Handle invalid requests
         } else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Not Found' }));
