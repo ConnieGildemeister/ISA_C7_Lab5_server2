@@ -47,12 +47,6 @@ const applyCORS = (response) => {
 const handleRequest = async (req, res) => {
     applyCORS(res);
 
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-        res.writeHead(204);
-        return res.end();
-    }
-
     let body = '';
     // Collect the request body
     req.on('data', chunk => body += chunk);
