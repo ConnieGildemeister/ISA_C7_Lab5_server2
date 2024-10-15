@@ -24,7 +24,7 @@ const initializeDatabase = async () => {
     }
 };
 
-initializeDatabase();
+// initializeDatabase();
 
 // Validate incoming SQL queries
 const validateSQLQuery = (sql, method) => {
@@ -48,6 +48,7 @@ const applyCORS = (response) => {
 // Main request handler function
 const handleRequest = async (req, res) => {
     applyCORS(res);
+    initializeDatabase();
 
     let body = '';
     // Collect the request body
