@@ -24,6 +24,8 @@ const initializeDatabase = async () => {
     }
 };
 
+initializeDatabase();
+
 // Validate incoming SQL queries
 const validateSQLQuery = (sql, method) => {
     const upperCaseSQL = sql.toUpperCase().trim();
