@@ -24,8 +24,6 @@ const initializeDatabase = async () => {
     }
 };
 
-// initializeDatabase();
-
 // Validate incoming SQL queries
 const validateSQLQuery = (sql, method) => {
     const upperCaseSQL = sql.toUpperCase().trim();
@@ -48,7 +46,6 @@ const applyCORS = (response) => {
 // Main request handler function
 const handleRequest = async (req, res) => {
     applyCORS(res);
-    initializeDatabase();
 
     let body = '';
     // Collect the request body
@@ -109,6 +106,7 @@ const handleRequest = async (req, res) => {
 
 // Create the server and listen on port 3000
 const server = http.createServer(handleRequest);
+initializeDatabase();
 server.listen(3000, async () => {
     console.log('Server is running on port 3000');
     await initializeDatabase(); // Initialize the database when the server starts
